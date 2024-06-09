@@ -1,4 +1,4 @@
-﻿namespace SWCodeReview
+﻿namespace SWCodeReview.Models
 {
     public class Employee
     {

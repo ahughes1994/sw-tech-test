@@ -1,22 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
+using SWCodeReview.Models;
+using SWCodeReview.Services;
 
 namespace SWCodeReview.Controllers
 {
-    [ApiController]
+	[ApiController]
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        private readonly EmployeeContext _context;
+		private readonly IEmployeeService employeeService;
 
-        public EmployeeController(EmployeeContext context)
+		public EmployeeController(IEmployeeService employeeService)
         {
-            _context = context;
-        }
+			this.employeeService = employeeService;
+		}
 
         [HttpGet]
         public IActionResult GetEmployees()
         {
-            var employees = _context.Employees.ToList();
+            var employees = employeeService.GetAll().ToList();
             return Ok(employees);
         }
 
@@ -28,15 +30,15 @@ namespace SWCodeReview.Controllers
                 return BadRequest();
             }
 
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
+            employee = employeeService.Add(employee);
+
             return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetEmployeeById(int id)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
+            var employee = employeeService.GetById(id);
 
             if (employee == null)
             {
@@ -49,35 +51,26 @@ namespace SWCodeReview.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
+            var employee = employeeService.Update(id, updatedEmployee);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            employee.FirstName = updatedEmployee.FirstName;
-            employee.LastName = updatedEmployee.LastName;
-            employee.Age = updatedEmployee.Age;
-            employee.Email = updatedEmployee.Email;
-            employee.Salary = updatedEmployee.Salary;
-
-            _context.SaveChanges();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteEmployee(int id)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
+            var employee = employeeService.Delete(id);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            _context.Employees.Remove(employee);
-            _context.SaveChanges();
             return NoContent();
         }
     }

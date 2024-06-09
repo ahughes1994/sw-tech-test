@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SWCodeReview.Models;
 
-namespace SWCodeReview
+namespace SWCodeReview.DataAccess
 {
     public class EmployeeContext : DbContext
     {
