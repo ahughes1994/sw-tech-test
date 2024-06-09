@@ -23,22 +23,22 @@ namespace SWCodeReview.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddEmployee([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
         {
             if (employee == null)
             {
                 return BadRequest();
             }
 
-            employee = employeeService.Add(employee);
+            employee = await employeeService.AddAsync(employee);
 
             return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetEmployeeById(int id)
+        public async Task<IActionResult> GetEmployeeById(int id)
         {
-            var employee = employeeService.GetById(id);
+            var employee = await employeeService.GetByIdAsync(id);
 
             if (employee == null)
             {
@@ -49,9 +49,9 @@ namespace SWCodeReview.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
+        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
         {
-            var employee = employeeService.Update(id, updatedEmployee);
+            var employee = await employeeService.UpdateAsync(id, updatedEmployee);
 
             if (employee == null)
             {
@@ -62,9 +62,9 @@ namespace SWCodeReview.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = employeeService.Delete(id);
+            var employee = await employeeService.DeleteAsync(id);
 
             if (employee == null)
             {
