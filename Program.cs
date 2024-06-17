@@ -17,6 +17,7 @@ builder.Services.AddDbContext<EmployeeContext>(options =>
 });
 
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
 
 var app = builder.Build();
 

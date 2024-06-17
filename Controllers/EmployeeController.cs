@@ -16,9 +16,9 @@ namespace SWCodeReview.Controllers
 		}
 
         [HttpGet]
-        public IActionResult GetEmployees()
+        public IActionResult GetEmployees(int? skip, int? take)
         {
-            var employees = employeeService.GetAll().ToList();
+            var employees = employeeService.GetAll(skip ?? 0, take ?? 10).ToList();
             return Ok(employees);
         }
 
@@ -30,7 +30,7 @@ namespace SWCodeReview.Controllers
                 return BadRequest();
             }
 
-            employee = await employeeService.AddAsync(employee);
+            employee = await employeeService.Add(employee);
 
             return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
         }
@@ -38,7 +38,7 @@ namespace SWCodeReview.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeeById(int id)
         {
-            var employee = await employeeService.GetByIdAsync(id);
+            var employee = await employeeService.GetById(id);
 
             if (employee == null)
             {
@@ -49,9 +49,9 @@ namespace SWCodeReview.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
+        public async Task<IActionResult> UpdateEmployee([FromBody] Employee updatedEmployee)
         {
-            var employee = await employeeService.UpdateAsync(id, updatedEmployee);
+            var employee = await employeeService.Update(updatedEmployee);
 
             if (employee == null)
             {
@@ -64,14 +64,9 @@ namespace SWCodeReview.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await employeeService.DeleteAsync(id);
+            var deleted = await employeeService.Delete(id);
 
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            return deleted ? NoContent() : NotFound();
         }
     }
 }
